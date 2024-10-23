@@ -1,0 +1,28 @@
+{
+  "balance": 4000,
+  "transactions": [
+    {
+      "id": 1729689101929,
+      "amount": 4200,
+      "category": "Monthly Expenses",
+      "description": "from mom",
+      "date": "2024-10-23T13:11:41.929Z"
+    },
+    {
+      "id": 1729689240817,
+      "amount": -200,
+      "category": "misc shopping",
+      "description": "",
+      "date": "2024-10-23T13:14:00.817Z"
+    }
+  ],
+  "debts": [
+    {
+      "id": 1729689263636,
+      "name": "John",
+      "amount": 100,
+      "isOwed": true,
+      "date": "2024-10-23T13:14:23.636Z"
+    }
+  ]
+}

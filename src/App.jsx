@@ -5,30 +5,53 @@ import ExpensePlot from './components/ExpensePlot';
 import CategoryManager from './components/CategoryManager';
 import OweBook from './components/OweBook';
 import ExpenseCalendar from './components/ExpenseCalendar';
-import "./App.css"
+import "./App.css";
 
 const App = () => {
   const [balance, setBalance] = useState(0);
   const [transactions, setTransactions] = useState([]);
   const [debts, setDebts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Load data from localStorage
-    const savedBalance = localStorage.getItem('balance');
-    const savedTransactions = localStorage.getItem('transactions');
-    const savedDebts = localStorage.getItem('debts');
+    // Load data from the server
+    const fetchData = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/data');
+        const data = await response.json();
+        setBalance(data.balance);
+        setTransactions(data.transactions);
+        setDebts(data.debts);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    if (savedBalance) setBalance(parseFloat(savedBalance));
-    if (savedTransactions) setTransactions(JSON.parse(savedTransactions));
-    if (savedDebts) setDebts(JSON.parse(savedDebts));
+    fetchData();
   }, []);
 
   useEffect(() => {
-    // Save data to localStorage whenever it changes
-    localStorage.setItem('balance', balance.toString());
-    localStorage.setItem('transactions', JSON.stringify(transactions));
-    localStorage.setItem('debts', JSON.stringify(debts)); // Save debts to localStorage
-  }, [balance, transactions, debts]);
+    // Only save data after initial load and when data actually changes
+    if (!isLoading) {
+      const saveData = async () => {
+        try {
+          await fetch('http://localhost:5000/api/data', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ balance, transactions, debts }),
+          });
+        } catch (error) {
+          console.error('Error saving data:', error);
+        }
+      };
+
+      saveData();
+    }
+  }, [balance, transactions, debts, isLoading]);
 
   const addTransaction = (amount, category, description) => {
     const newTransaction = {
@@ -53,6 +76,19 @@ const App = () => {
   const deleteDebt = (id) => {
     setDebts(debts.filter(debt => debt.id !== id));
   };
+
+  if (isLoading) {
+    return (
+      <div className="loading-container" style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '100vh' 
+      }}>
+        <p>Loading your financial data...</p>
+      </div>
+    );
+  }
 
   return (
     <Router>

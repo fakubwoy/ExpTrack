@@ -53,7 +53,6 @@ const TransactionLog = ({ balance, transactions, addTransaction }) => {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Description"
-          required
         />
         <button type="submit">Add Transaction</button>
       </form>
