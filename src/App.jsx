@@ -1,4 +1,3 @@
-// App.jsx
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import TransactionLog from './components/TransactionLog';
@@ -11,21 +10,25 @@ import "./App.css"
 const App = () => {
   const [balance, setBalance] = useState(0);
   const [transactions, setTransactions] = useState([]);
+  const [debts, setDebts] = useState([]);
 
   useEffect(() => {
     // Load data from localStorage
     const savedBalance = localStorage.getItem('balance');
     const savedTransactions = localStorage.getItem('transactions');
+    const savedDebts = localStorage.getItem('debts');
 
     if (savedBalance) setBalance(parseFloat(savedBalance));
     if (savedTransactions) setTransactions(JSON.parse(savedTransactions));
+    if (savedDebts) setDebts(JSON.parse(savedDebts));
   }, []);
 
   useEffect(() => {
     // Save data to localStorage whenever it changes
     localStorage.setItem('balance', balance.toString());
     localStorage.setItem('transactions', JSON.stringify(transactions));
-  }, [balance, transactions]);
+    localStorage.setItem('debts', JSON.stringify(debts)); // Save debts to localStorage
+  }, [balance, transactions, debts]);
 
   const addTransaction = (amount, category, description) => {
     const newTransaction = {
@@ -37,6 +40,18 @@ const App = () => {
     };
     setTransactions([...transactions, newTransaction]);
     setBalance(balance + amount);
+  };
+
+  const addDebt = (debt) => {
+    setDebts([...debts, debt]);
+  };
+
+  const updateDebt = (updatedDebt) => {
+    setDebts(debts.map(debt => (debt.id === updatedDebt.id ? updatedDebt : debt)));
+  };
+
+  const deleteDebt = (id) => {
+    setDebts(debts.filter(debt => debt.id !== id));
   };
 
   return (
@@ -62,7 +77,14 @@ const App = () => {
           } />
           <Route path="/plot" element={<ExpensePlot transactions={transactions} />} />
           <Route path="/categories" element={<CategoryManager transactions={transactions} />} />
-          <Route path="/owebook" element={<OweBook />} />
+          <Route path="/owebook" element={
+            <OweBook
+              debts={debts}
+              addDebt={addDebt}
+              updateDebt={updateDebt}
+              deleteDebt={deleteDebt}
+            />
+          } />
           <Route path="/calendar" element={<ExpenseCalendar transactions={transactions} />} />
         </Routes>
       </div>
