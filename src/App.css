@@ -269,6 +269,7 @@ button:hover {
   height: 2.5rem;
   border-radius: 0.5rem;
   text-align: center;
+  border: 1px solid var(--border-color);
 }
 .debt-list {
   display: grid;
