@@ -100,10 +100,45 @@ li {
   margin-bottom: 20px;
 }
 
-/* ExpensePlot specific styles */
-.recharts-wrapper {
+/* Expense Plot Styles */
+
+.expense-plot-container {
+  width: 100%;
+  max-width: 1024px;
+  padding: 16px;
   margin: auto;
 }
+
+.expense-plot-title {
+  font-size: 1.25rem; /* Corresponds to text-xl */
+  font-weight: 600;   /* Corresponds to font-semibold */
+  margin-bottom: 16px;
+}
+
+.expense-plot-select {
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.expense-plot-tooltip {
+  background-color: white;
+  padding: 8px;
+  border: 1px solid #e5e7eb; /* Matches border-gray-200 */
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tooltip-text-sm {
+  font-size: 0.875rem;
+}
+
+.tooltip-text-semibold {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
 
 /* CategoryManager specific styles */
 .category-list {
