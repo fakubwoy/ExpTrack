@@ -12,7 +12,13 @@ const App = () => {
   const [transactions, setTransactions] = useState([]);
   const [debts, setDebts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [theme, setTheme] = useState('light');
 
+const toggleTheme = () => {
+  const newTheme = theme === 'light' ? 'dark' : 'light';
+  setTheme(newTheme);
+  document.documentElement.setAttribute('data-theme', newTheme);
+};
   useEffect(() => {
     // Load data from the server
     const fetchData = async () => {
@@ -123,6 +129,13 @@ const App = () => {
           } />
           <Route path="/calendar" element={<ExpenseCalendar transactions={transactions} />} />
         </Routes>
+        <button 
+  className="theme-toggle" 
+  onClick={toggleTheme}
+  aria-label="Toggle dark mode"
+>
+  {theme === 'light' ? '🌙' : '☀️'}
+</button>
       </div>
     </Router>
   );

@@ -1,245 +1,524 @@
 /* App.css */
+:root {
+  /* Light theme variables */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --text-primary: #2d3748;
+  --text-secondary: #4a5568;
+  --accent-primary: #4f46e5;
+  --accent-hover: #4338ca;
+  --border-color: #e2e8f0;
+  --nav-bg: #ffffff;
+  --card-bg: #ffffff;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --hover-bg: #f7f7f7;
+  --table-stripe: #f8fafc;
+  --table-header: #f1f5f9;
+  --chart-bg: #ffffff;
+  --calendar-today: #ebf4ff;
+  --calendar-selected: #4f46e5;
+  --calendar-hover: #edf2ff;
+  --success-color: #059669;
+  --danger-color: #dc2626;
+  --warning-color: #d97706;
+}
 
+[data-theme='dark'] {
+  --bg-primary: #111827;
+  --bg-secondary: #1f2937;
+  --text-primary: #f3f4f6;
+  --text-secondary: #d1d5db;
+  --accent-primary: #6366f1;
+  --accent-hover: #818cf8;
+  --border-color: #374151;
+  --nav-bg: #0f172a;
+  --card-bg: #1f2937;
+  --shadow-color: rgba(0, 0, 0, 0.3);
+  --hover-bg: #2d3748;
+  --table-stripe: #283548;
+  --table-header: #0f172a;
+  --chart-bg: #1f2937;
+  --calendar-today: #1e3a8a;
+  --calendar-selected: #6366f1;
+  --calendar-hover: #2d3748;
+  --success-color: #34d399;
+  --danger-color: #f87171;
+  --warning-color: #fbbf24;
+}
+
+/* Base styles */
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   line-height: 1.6;
-  color: #333;
+  color: var(--text-primary);
   margin: 0;
   padding: 0;
-  background-color: #f4f4f4;
+  background-color: var(--bg-secondary);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .container {
-  width: 80%;
+  width: 90%;
+  max-width: 1200px;
   margin: auto;
-  overflow: hidden;
-  padding: 20px;
+  padding: 2rem;
 }
 
+/* Navigation */
 nav {
-  background-color: #333;
-  color: #fff;
-  padding: 10px 0;
+  background-color: var(--nav-bg);
+  box-shadow: 0 2px 4px var(--shadow-color);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  font-size: large;
+  padding: 1rem 0;
 }
 
 nav ul {
-  list-style-type: none;
-  padding: 0;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
   display: flex;
-  justify-content: space-around;
+  gap: 2rem;
+  justify-content: center;
 }
 
 nav ul li {
   display: inline;
-  background-color: #333;
 }
 
 nav ul li a {
-  color: #fff;
+  color: var(--text-primary);
   text-decoration: none;
-  padding: 10px;
-  transition: background-color 0.3s;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
 }
 
+nav ul li a:hover {
+  background-color: var(--accent-primary);
+  color: white;
+}
+
+/* Common Components */
 h2 {
-  color: #333;
-  border-bottom: 2px solid #333;
-  padding-bottom: 10px;
+  color: var(--text-primary);
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  border-bottom: none;
+  position: relative;
 }
 
+h2::after {
+  content: '';
+  position: absolute;
+  bottom: -0.5rem;
+  left: 0;
+  width: 3rem;
+  height: 0.25rem;
+  background-color: var(--accent-primary);
+  border-radius: 0.125rem;
+}
+
+/* Forms */
 form {
-  background: #fff;
-  padding: 20px;
-  margin-bottom: 20px;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background: var(--card-bg);
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px var(--shadow-color);
+  margin-bottom: 2rem;
+  border: 1px solid var(--border-color);
 }
 
 input[type="text"],
 input[type="number"],
-select {
+input[type="date"] {
   width: 100%;
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  height: 1.5rem;
+  font-size: medium;
+  padding: 0.75rem 1rem;
+  margin: 0.5rem 0 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: all 0.2s ease;
 }
+
+input:focus,
+select:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+} 
 
 button {
-  display: inline-block;
-  background: #272727;
-  color: #dedede;
-  padding: 10px 20px;
+  background: var(--accent-primary);
+  color: white;
+  padding: 0.75rem 1.5rem;
   border: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
   cursor: pointer;
-  border-radius: 4px;
-  transition: background-color 0.3s;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
+select{
+  font-size: medium;
+}
 button:hover {
-  background: #555;
+  background: var(--accent-hover);
+  transform: translateY(-1px);
 }
 
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  background: #fff;
-  border: 1px solid #ddd;
-  margin-bottom: 10px;
-  padding: 10px;
-  border-radius: 4px;
-}
-
-/* TransactionLog specific styles */
+/* Transaction Log Styles */
 .balance {
-  font-size: 1.2em;
+  font-size: 2rem;
   font-weight: bold;
-  margin-bottom: 20px;
+  color: var(--text-primary);
+  background: var(--card-bg);
+  padding: 2rem;
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px var(--shadow-color);
+  border: 1px solid var(--border-color);
+}
+
+.balance.positive {
+  color: var(--success-color);
+}
+
+.balance.negative {
+  color: var(--danger-color);
 }
 
 /* Expense Plot Styles */
-
 .expense-plot-container {
-  width: 100%;
-  max-width: 1024px;
-  padding: 16px;
-  margin: auto;
+  background: var(--card-bg);
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px var(--shadow-color);
+  border: 1px solid var(--border-color);
 }
 
 .expense-plot-title {
-  font-size: 1.25rem; /* Corresponds to text-xl */
-  font-weight: 600;   /* Corresponds to font-semibold */
-  margin-bottom: 16px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
 }
 
-.expense-plot-select {
-  padding: 10px;
-  margin-bottom: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
+ .expense-plot-select {
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  width: auto;
+  min-width: 200px;
+  margin-bottom: 1.5rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  border: 1px solid var(--border-color);
+} 
 
 .expense-plot-tooltip {
-  background-color: white;
-  padding: 8px;
-  border: 1px solid #e5e7eb; /* Matches border-gray-200 */
-  border-radius: 4px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: var(--card-bg);
+  padding: 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px var(--shadow-color);
 }
 
-.tooltip-text-sm {
-  font-size: 0.875rem;
-}
-
-.tooltip-text-semibold {
-  font-size: 0.875rem;
-  font-weight: 600;
-}
-
-
-/* CategoryManager specific styles */
+/* Category Manager Styles */
 .category-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem 0;
+  list-style: none;
 }
 
 .category-item {
-  flex-basis: calc(50% - 10px);
-  margin-bottom: 20px;
+  text-align: center;
+  background: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px var(--shadow-color);
+  border: 1px solid var(--border-color);
+  transition: transform 0.2s ease;
 }
 
-/* OweBook specific styles */
+.category-item:hover {
+  transform: translateY(-2px);
+}
+
+/* OweBook Styles */
+
+.owebook-select{
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  width: auto;
+  min-width: 200px;
+  margin-bottom: 1.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  text-align: center;
+}
 .debt-list {
-  max-height: 300px;
-  overflow-y: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem 0;
+  list-style: none;
 }
 
-/* ExpenseCalendar specific styles */
+.debt-item {
+  text-align: center;
+  font-size: large;
+  background: var(--card-bg)!important;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px var(--shadow-color);
+  border: 1px solid var(--border-color);
+  transition: transform 0.2s ease;
+}
+
+.debt-actions {
+  display: inline;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+/* Calendar Styles */
 .react-calendar {
   width: 100%;
   max-width: 100%;
-  background: white;
-  border: 1px solid #a0a096;
-  font-family: Arial, Helvetica, sans-serif;
-  line-height: 1.125em;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px var(--shadow-color);
+  padding: 1rem;
+  color: var(--text-primary);
+}
+
+.react-calendar__navigation {
+  text-align: center;
+  display: flex;
+  margin-bottom: 1rem;
+}
+
+.react-calendar__navigation button {
+  min-width: 44px;
+  background: none;
+  color: var(--text-primary);
+  padding: 0.5rem;
+}
+
+.react-calendar__navigation button:enabled:hover {
+  background-color: var(--calendar-hover);
 }
 
 .react-calendar__tile {
-  max-width: 100%;
+  padding: 1rem 0.5rem;
+  background: none;
   text-align: center;
-  padding: 0.75em 0.5em;
+  line-height: 16px;
+  color: var(--text-primary);
+  border-radius: 0.5rem;
 }
 
-.react-calendar__tile--now {
-  background: #ffff76;
+.react-calendar__tile:enabled:hover {
+  background-color: var(--calendar-hover);
 }
 
 .react-calendar__tile--active {
-  background: #006edc;
+  background: var(--calendar-selected);
+  color: white;
+}
+
+.react-calendar__tile--now {
+  background: var(--calendar-today);
+}
+
+.react-calendar__tile--active {
+  background: var(--calendar-selected);
   color: white;
 }
 
 .react-calendar__tile--hasContent {
-  background-color: #e6f3ff;
-  color: #006edc;
+  text-align: center;
+  background-color: var(--calendar-hover);
+  font-weight: bold;
 }
 
+.calendar-list{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem 0;
+  list-style: none;
+}
+.calendar-item {
+  text-align: center;
+  font-size: large;
+  background: var(--card-bg)!important;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px var(--shadow-color);
+  border: 1px solid var(--border-color);
+  transition: transform 0.2s ease;
+}
+/* Table styles */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 1.5rem;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 4px 6px var(--shadow-color);
+  background-color: var(--card-bg);
+}
+
+th, td {
+  padding: 1rem;
+  text-align: left;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+th {
+  background-color: var(--table-header);
+  font-weight: 600;
+}
+
+tr:nth-child(even) {
+  background-color: var(--table-stripe);
+}
+
+tr:hover {
+  background-color: var(--hover-bg);
+}
+
+/* Loading state */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  gap: 1rem;
+}
+
+.loading-spinner {
+  border: 4px solid var(--border-color);
+  border-top: 4px solid var(--accent-primary);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Dark mode toggle */
+.theme-toggle {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  padding: 0.75rem;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 4px 6px var(--shadow-color);
+  transition: all 0.2s ease;
+  z-index: 1000;
+}
+
+.theme-toggle:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px var(--shadow-color);
+}
+
+/* Responsive design */
 @media (max-width: 768px) {
   .container {
     width: 95%;
+    padding: 1rem;
   }
   
   nav ul {
     flex-direction: column;
+    padding: 1rem;
+    gap: 0.5rem;
   }
   
-  nav ul li {
-    margin-bottom: 10px;
+  nav ul li a {
+    display: block;
+    padding: 0.75rem 1rem;
+    text-align: center;
   }
   
-  .category-item {
-    flex-basis: 100%;
+  form {
+    padding: 1.5rem;
+  }
+  
+  .category-list {
+    grid-template-columns: 1fr;
+  }
+  
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  .balance {
+    font-size: 1.5rem;
+    padding: 1.5rem;
+  }
+  
+  .debt-list {
+    max-height: 400px;
+  }
+  
+  .theme-toggle {
+    bottom: 1rem;
+    right: 1rem;
   }
 }
-/* Expense Plot */
-.expense-plot select {
-  padding: 10px;
-  margin-bottom: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+
+/* Chart customization */
+.recharts-wrapper {
+  margin: auto;
+  background: var(--chart-bg);
+  border-radius: 1rem;
+  padding: 1rem;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
+.recharts-text {
+  fill: var(--text-primary);
 }
 
-th, td {
-  border: 1px solid #ddd;
-  padding: 12px;
-  text-align: center;
-  font-size: 16px;
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: var(--border-color);
 }
 
-th {
-  background-color: #4e4e4e;
-  color: white;
-  font-weight: bold;
-}
-
-tr:nth-child(even) {
-  background-color: #cfcfcf; /* Light gray for even rows */
-}
-
-tr:hover {
-  background-color: #e1e1e1; /* Slightly darker gray for hover effect */
-}
-
-tr:last-child td {
-  border-bottom: 2px solid #000204; /* Bold bottom border for last row */
+.recharts-tooltip-wrapper {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px var(--shadow-color);
 }

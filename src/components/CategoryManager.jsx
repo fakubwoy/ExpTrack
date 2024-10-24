@@ -18,9 +18,9 @@ const CategoryManager = ({ transactions }) => {
   return (
     <div>
       <h2>Category Manager</h2>
-      <ul>
+      <ul className='category-list'>
         {categories.map(category => (
-          <li key={category}>
+          <li key={category} className='category-item'>
             {category}: ₹{getCategoryTotal(category).toFixed(2)}
           </li>
         ))}

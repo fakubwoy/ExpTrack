@@ -109,6 +109,7 @@ const ExpensePlot = ({ transactions }) => {
       id="timeframe"
       value={timeframe}
       onChange={(e) => setTimeframe(e.target.value)}
+      defaultChecked="daily"
       className="expense-plot-select"
     >
       <option value="daily">Daily</option>

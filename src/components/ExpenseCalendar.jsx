@@ -30,10 +30,10 @@ const ExpenseCalendar = ({ transactions }) => {
       />
       <div>
         <h3>Expenses for {selectedDate.toDateString()}</h3>
-        <ul>
+        <ul className='calendar-list'>
           {getDayExpenses(selectedDate).map(expense => (
-            <li key={expense.id}>
-              {expense.amount} - {expense.category} - {expense.description}
+            <li key={expense.id} className='calendar-item'>
+              ₹{expense.amount} : {expense.category}  {expense.description}
             </li>
           ))}
         </ul>

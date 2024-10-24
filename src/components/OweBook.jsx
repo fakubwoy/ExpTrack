@@ -56,22 +56,22 @@ const OweBook = ({ debts, addDebt, updateDebt, deleteDebt }) => {
           placeholder="Amount"
           required
         />
-        <select value={isOwed} onChange={(e) => setIsOwed(e.target.value === 'true')}>
+        <select value={isOwed} onChange={(e) => setIsOwed(e.target.value === 'true')} className='owebook-select'>
           <option value="true">They owe me</option>
           <option value="false">I owe them</option>
         </select>
         <button type="submit">{editingDebt ? 'Update Debt' : 'Add Debt'}</button>
       </form>
 
-      <ul>
+      <ul className='debt-list'>
         {debts.map((debt) => (
-          <li key={debt.id}>
-            {debt.name} - ₹{debt.amount.toFixed(2)} - 
-            {debt.isOwed ? "They owe me" : "I owe them"}
-            <button onClick={() => editDebt(debt)} style={{ marginLeft: '10px', color: 'lightblue' }}>
+          <li key={debt.id} className='debt-item'>
+            {debt.name} : ₹{debt.amount.toFixed(2)} :
+            {debt.isOwed ? " They owe me" : " I owe them"}
+            <button onClick={() => editDebt(debt)} style={{ marginLeft: '10px', color: 'white' }} className='debt-actions'>
               Edit
             </button>
-            <button onClick={() => deleteDebt(debt.id)} style={{ marginLeft: '10px', color: 'red' }}>
+            <button onClick={() => deleteDebt(debt.id)} style={{ marginLeft: '10px', color: 'white' }} className='debt-actions'>
               Delete
             </button>
           </li>
