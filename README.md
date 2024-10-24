@@ -1,2 +1,2 @@
 # ToDo
-- improve calendar ui
+- update plot logic

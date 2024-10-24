@@ -68,10 +68,10 @@ const OweBook = ({ debts, addDebt, updateDebt, deleteDebt }) => {
           <li key={debt.id} className='debt-item'>
             {debt.name} : ₹{debt.amount.toFixed(2)} :
             {debt.isOwed ? " They owe me" : " I owe them"}
-            <button onClick={() => editDebt(debt)} style={{ marginLeft: '10px', color: 'white' }} className='debt-actions'>
+            <button onClick={() => editDebt(debt)} style={{ marginLeft: '10px', color: 'white' }} className='debt-actions' id='edit-debt'>
               Edit
             </button>
-            <button onClick={() => deleteDebt(debt.id)} style={{ marginLeft: '10px', color: 'white' }} className='debt-actions'>
+            <button onClick={() => deleteDebt(debt.id)} style={{ marginLeft: '10px', color: 'white' }} className='debt-actions' id='del-debt'>
               Delete
             </button>
           </li>
