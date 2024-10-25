@@ -5,7 +5,6 @@ const ExpensePlot = ({ transactions }) => {
   const [timeframe, setTimeframe] = useState('daily');
 
   const processData = () => {
-    // Sort all transactions by date first
     const sortedTransactions = [...transactions].sort(
       (a, b) => new Date(a.date) - new Date(b.date)
     );
@@ -13,7 +12,6 @@ const ExpensePlot = ({ transactions }) => {
     let runningBalance = 0;
     const allPoints = [];
     
-    // If there are transactions, add initial balance point just before first transaction
     if (sortedTransactions.length > 0) {
       const firstDate = new Date(sortedTransactions[0].date);
       firstDate.setMinutes(firstDate.getMinutes() - 1);
@@ -29,7 +27,6 @@ const ExpensePlot = ({ transactions }) => {
       });
     }
 
-    // Create points for each transaction with running balance
     sortedTransactions.forEach(transaction => {
       runningBalance += transaction.amount;
       const txDate = new Date(transaction.date);
@@ -46,7 +43,6 @@ const ExpensePlot = ({ transactions }) => {
       });
     });
 
-    // Filter based on timeframe
     if (timeframe === 'daily') {
       const today = new Date();
       return allPoints.filter(point => 
@@ -95,7 +91,6 @@ const ExpensePlot = ({ transactions }) => {
 
   const chartData = processData();
 
-  // Calculate Y-axis domain with padding
   const getYAxisDomain = () => {
     if (chartData.length === 0) return [0, 100];
     
@@ -103,15 +98,13 @@ const ExpensePlot = ({ transactions }) => {
     const maxBalance = Math.max(...chartData.map(d => d.balance));
     const range = maxBalance - minBalance;
     
-    // Add 10% padding to the range
     const padding = range * 0.1;
     return [
-      Math.floor((minBalance - padding) / 100) * 100, // Round down to nearest 100
-      Math.ceil((maxBalance + padding) / 100) * 100   // Round up to nearest 100
+      Math.floor((minBalance - padding) / 100) * 100, 
+      Math.ceil((maxBalance + padding) / 100) * 100  
     ];
   };
 
-  // Custom line for gradient colors based on balance change
   const CustomizedLine = ({ points }) => {
     return points.map((point, index) => {
       if (index === 0) return null;
@@ -119,7 +112,7 @@ const ExpensePlot = ({ transactions }) => {
       const prev = points[index - 1];
       const current = point;
       const isIncrease = current.payload.balance > prev.payload.balance;
-      const color = isIncrease ? "#22c55e" : "#ef4444"; // Green for increase, red for decrease
+      const color = isIncrease ? "#22c55e" : "#ef4444";
       
       return (
         <line
