@@ -61,7 +61,7 @@ const TransactionLog = ({ balance, transactions, addTransaction }) => {
         <thead>
           <tr>
             <th>Date & Time</th>
-            <th>Amount</th>
+            <th>Amount (₹)</th>
             <th>Category</th>
             <th>Description</th>
           </tr>
