@@ -71,7 +71,7 @@ const TransactionLog = ({ balance, transactions, addTransaction }) => {
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">Transaction Log</h2>
-      <p className="text-lg mb-4">Current Balance: ₹{balance.toFixed(2)}</p>
+      <p className="text-lg mb-4" id='balance'>Current Balance: ₹{balance.toFixed(2)}</p>
       
       <form onSubmit={handleSubmit} className="mb-6">
         <div className="flex flex-wrap gap-4 mb-4">

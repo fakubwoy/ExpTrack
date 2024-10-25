@@ -193,6 +193,10 @@ button:hover {
   border: 1px solid var(--border-color);
 }
 
+#balance {
+  font-size: large;
+  font-weight: 600;
+}
 .balance.positive {
   color: var(--success-color);
 }
