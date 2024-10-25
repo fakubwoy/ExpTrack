@@ -3,6 +3,7 @@
   /* Light theme variables */
   --bg-primary: #ffffff;
   --bg-secondary: #f8f9fa;
+  --bg-suggestion: #f8f9fa;
   --text-primary: #2d3748;
   --text-secondary: #b1b1b1;
   --accent-primary: #4f46e5;
@@ -26,6 +27,7 @@
 [data-theme='dark'] {
   --bg-primary: #111827;
   --bg-secondary: #1f2937;
+  --bg-suggestion: #24314f;
   --text-primary: #f3f4f6;
   --text-secondary: #878787;
   --accent-primary: #6366f1;
@@ -258,6 +260,13 @@ button:hover {
   transform: translateY(-2px);
 }
 
+#suggestion {
+  background-color: var(--bg-suggestion);
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+}
 /* OweBook Styles */
 
 .owebook-select{
