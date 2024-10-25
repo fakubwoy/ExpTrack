@@ -1,168 +1,207 @@
 import React, { useState } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceDot } from 'recharts';
 
 const ExpensePlot = ({ transactions }) => {
   const [timeframe, setTimeframe] = useState('daily');
 
   const processData = () => {
-    const data = [];
-    let runningBalance = 0;
+    // Sort all transactions by date first
+    const sortedTransactions = [...transactions].sort(
+      (a, b) => new Date(a.date) - new Date(b.date)
+    );
     
-    if (timeframe === 'daily') {
-      // Sort transactions by timestamp for the current day
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      
-      const todaysTransactions = transactions
-        .filter(transaction => {
-          const txDate = new Date(transaction.date);
-          return txDate >= today;
-        })
-        .sort((a, b) => new Date(a.date) - new Date(b.date));
-
-      // Create initial balance point at start of day
-      data.push({
-        timestamp: today.toISOString(),
+    let runningBalance = 0;
+    const allPoints = [];
+    
+    // If there are transactions, add initial balance point just before first transaction
+    if (sortedTransactions.length > 0) {
+      const firstDate = new Date(sortedTransactions[0].date);
+      firstDate.setMinutes(firstDate.getMinutes() - 1);
+      allPoints.push({
+        timestamp: firstDate.toISOString(),
         balance: runningBalance,
-        formattedTime: '00:00'
+        formattedTime: firstDate.toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit'
+        }),
+        formattedDate: firstDate.toLocaleDateString(),
+        change: 0
       });
+    }
 
-      // Add a point for each transaction showing running balance
-      todaysTransactions.forEach(transaction => {
-        const txDate = new Date(transaction.date);
-        runningBalance += transaction.amount;
-        
-        data.push({
-          timestamp: txDate.toISOString(),
-          balance: runningBalance,
-          formattedTime: txDate.toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit'
-          })
-        });
-      });
-    } else {
-      // Handle other timeframes using the original logic
-      const groupedData = {};
+    // Create points for each transaction with running balance
+    sortedTransactions.forEach(transaction => {
+      runningBalance += transaction.amount;
+      const txDate = new Date(transaction.date);
       
-      transactions.forEach(transaction => {
-        const date = new Date(transaction.date);
-        let key;
-
-        if (timeframe === 'weekly') {
-          const weekStart = new Date(date.setDate(date.getDate() - date.getDay()));
-          key = weekStart.toISOString().split('T')[0];
-        } else if (timeframe === 'monthly') {
-          key = `${date.getFullYear()}-${date.getMonth() + 1}`;
-        } else if (timeframe === 'today') {
-          const today = new Date();
-          if (date.toDateString() === today.toDateString()) {
-            key = today.toISOString().split('T')[0];
-          } else {
-            return;
-          }
-        }
-
-        if (!groupedData[key]) {
-          groupedData[key] = 0;
-        }
-        groupedData[key] += transaction.amount;
+      allPoints.push({
+        timestamp: txDate.toISOString(),
+        balance: runningBalance,
+        formattedTime: txDate.toLocaleTimeString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit'
+        }),
+        formattedDate: txDate.toLocaleDateString(),
+        change: transaction.amount
       });
+    });
 
-      // Convert grouped data to array format
-      return Object.keys(groupedData).map(key => ({
+    // Filter based on timeframe
+    if (timeframe === 'daily') {
+      const today = new Date();
+      return allPoints.filter(point => 
+        new Date(point.timestamp).toDateString() === today.toDateString()
+      );
+    } else if (timeframe === 'weekly') {
+      const weeklyData = {};
+      allPoints.forEach(point => {
+        const date = new Date(point.timestamp);
+        const weekStart = new Date(date.setDate(date.getDate() - date.getDay()));
+        const key = weekStart.toISOString().split('T')[0];
+        weeklyData[key] = {
+          balance: point.balance,
+          change: point.change
+        };
+      });
+      return Object.entries(weeklyData).map(([key, data]) => ({
         timestamp: key,
-        balance: groupedData[key],
-        formattedTime: key
+        balance: data.balance,
+        change: data.change,
+        formattedDate: new Date(key).toLocaleDateString()
+      }));
+    } else if (timeframe === 'monthly') {
+      const monthlyData = {};
+      allPoints.forEach(point => {
+        const date = new Date(point.timestamp);
+        const key = `${date.getFullYear()}-${date.getMonth() + 1}`;
+        monthlyData[key] = {
+          balance: point.balance,
+          change: point.change
+        };
+      });
+      return Object.entries(monthlyData).map(([key, data]) => ({
+        timestamp: key,
+        balance: data.balance,
+        change: data.change,
+        formattedDate: new Date(key + '-01').toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short'
+        })
       }));
     }
 
-    return data;
+    return allPoints;
   };
 
   const chartData = processData();
 
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
+  // Calculate Y-axis domain with padding
+  const getYAxisDomain = () => {
+    if (chartData.length === 0) return [0, 100];
+    
+    const minBalance = Math.min(...chartData.map(d => d.balance));
+    const maxBalance = Math.max(...chartData.map(d => d.balance));
+    const range = maxBalance - minBalance;
+    
+    // Add 10% padding to the range
+    const padding = range * 0.1;
+    return [
+      Math.floor((minBalance - padding) / 100) * 100, // Round down to nearest 100
+      Math.ceil((maxBalance + padding) / 100) * 100   // Round up to nearest 100
+    ];
+  };
+
+  // Custom line for gradient colors based on balance change
+  const CustomizedLine = ({ points }) => {
+    return points.map((point, index) => {
+      if (index === 0) return null;
+      
+      const prev = points[index - 1];
+      const current = point;
+      const isIncrease = current.payload.balance > prev.payload.balance;
+      const color = isIncrease ? "#22c55e" : "#ef4444"; // Green for increase, red for decrease
+      
       return (
-        <div className="bg-white p-2 border border-gray-200 rounded shadow">
-          <p className="text-sm">
-            {timeframe === 'daily' 
-              ? `Time: ${payload[0].payload.formattedTime}`
-              : `Date: ${label}`}
-          </p>
-          <p className="text-sm font-semibold">
-            Balance: ${payload[0].value.toFixed(2)}
-          </p>
-        </div>
+        <line
+          key={index}
+          x1={prev.x}
+          y1={prev.y}
+          x2={current.x}
+          y2={current.y}
+          stroke={color}
+          strokeWidth={2}
+        />
       );
-    }
-    return null;
+    });
   };
 
   return (
-    <div className="expense-plot-container">
-  <h2 className="expense-plot-title">Balance History</h2>
-  <div className="mb-4">
-    <label htmlFor="timeframe" className="mr-2">Select Timeframe: </label>
-    <select
-      id="timeframe"
-      value={timeframe}
-      onChange={(e) => setTimeframe(e.target.value)}
-      defaultChecked="daily"
-      className="expense-plot-select"
-    >
-      <option value="daily">Daily</option>
-      <option value="weekly">Weekly</option>
-      <option value="monthly">Monthly</option>
-    </select>
-  </div>
-  <LineChart
-    width={600}
-    height={300}
-    data={chartData}
-    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-  >
-    <CartesianGrid strokeDasharray="3 3" />
-    <XAxis
-      dataKey={timeframe === 'daily' ? 'formattedTime' : 'timestamp'}
-      tick={{ fontSize: 12 }}
-    />
-    <YAxis
-      tick={{ fontSize: 12 }}
-      label={{
-        value: 'Balance (₹)',
-        angle: -90,
-        position: 'insideLeft',
-      }}
-    />
-    <Tooltip
-      content={({ active, payload, label }) =>
-        active && payload && payload.length ? (
-          <div className="expense-plot-tooltip">
-            <p className="tooltip-text-sm">
-              {timeframe === 'daily'
-                ? `Time: ${payload[0].payload.formattedTime}`
-                : `Date: ${label}`}
-            </p>
-            <p className="tooltip-text-semibold">
-              Balance: ₹{payload[0].value.toFixed(2)}
-            </p>
-          </div>
-        ) : null
-      }
-    />
-    <Legend />
-    <Line
-      type="stepAfter"
-      dataKey="balance"
-      stroke="#8884d8"
-      dot={timeframe === 'daily'}
-      name="Balance"
-    />
-  </LineChart>
-</div>
-
+    <div className="w-full max-w-4xl p-4">
+      <h2 className="text-xl font-bold mb-4">Balance History</h2>
+      <div className="mb-4">
+        <label htmlFor="timeframe" className="mr-2">Select Timeframe: </label>
+        <select
+          id="timeframe"
+          value={timeframe}
+          onChange={(e) => setTimeframe(e.target.value)}
+          className="expense-plot-select"
+        >
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+        </select>
+      </div>
+      <LineChart
+        width={600}
+        height={300}
+        data={chartData}
+        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+      >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis
+          dataKey={timeframe === 'daily' ? 'formattedTime' : 'formattedDate'}
+          tick={{ fontSize: 12 }}
+        />
+        <YAxis
+          domain={getYAxisDomain()}
+          tick={{ fontSize: 12 }}
+          label={{
+            value: 'Balance (₹)',
+            angle: -90,
+            position: 'insideLeft',
+          }}
+        />
+        <Tooltip
+          content={({ active, payload, label }) =>
+            active && payload && payload.length ? (
+              <div className="bg-white p-2 border rounded shadow">
+                <p className="text-sm">
+                  {timeframe === 'daily'
+                    ? `Time: ${label}`
+                    : `Date: ${label}`}
+                </p>
+                <p className="text-sm font-semibold">
+                  Balance: ₹{payload[0].value.toFixed(2)}
+                </p>
+                {payload[0].payload.change !== 0 && (
+                  <p className={`text-sm ${payload[0].payload.change > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    Change: ₹{payload[0].payload.change.toFixed(2)}
+                  </p>
+                )}
+              </div>
+            ) : null
+          }
+        />
+        <Legend />
+        <Line
+          type="linear"
+          dataKey="balance"
+          name="Balance"
+          dot={{ stroke: '#666', strokeWidth: 2, r: 4 }}
+          shape={<CustomizedLine />}
+        />
+      </LineChart>
+    </div>
   );
 };
 
