@@ -39,7 +39,7 @@
   --hover-bg: #2d3748;
   --table-stripe: #283548;
   --table-header: #0f172a;
-  --chart-bg: #1f2937;
+  --chart-bg: #141b25;
   --calendar-today: #1e3a8a;
   --calendar-selected: #6366f1;
   --calendar-hover: #2d3748;
@@ -562,4 +562,14 @@ tr:hover {
   border: 1px solid var(--border-color) !important;
   border-radius: 0.5rem;
   box-shadow: 0 4px 6px var(--shadow-color);
+}
+
+.recharts-line-curve{
+  stroke: var(--accent-primary)!important;
+}  
+.recharts-legend-item{
+  color: var(--accent-primary)!important;
+}
+.recharts-legend-item-text,.recharts-legend-icon{
+  color: var(--accent-primary)!important;
 }

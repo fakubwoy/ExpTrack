@@ -190,7 +190,9 @@ const ExpensePlot = ({ transactions }) => {
           type="linear"
           dataKey="balance"
           name="Balance"
-          dot={{ stroke: '#666', strokeWidth: 2, r: 4 }}
+          dot={{ stroke: '#4f46e5', strokeWidth: 2, r: 4 }}
+          activeDot={{ stroke: '#4f46e5', strokeWidth: 2, r: 6 }}
+          stroke='#4f46e5'
           shape={<CustomizedLine />}
         />
       </LineChart>
